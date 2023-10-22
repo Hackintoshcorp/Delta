@@ -63,18 +63,20 @@ class Controller extends BaseController
         $operationsToRetrieve = ["scanOne", "scanFull", "optimize", "regenKeys"];
         $lastDates = [];
 
-        foreach ($operationsToRetrieve as $operation) {
-            $lastDate = null;
-            foreach ($history as $entry) {
-                if ($entry['execute'] === $operation) {
-                    $lastDate = $entry['date'];
+        if (!empty($history)) {
+            foreach ($operationsToRetrieve as $operation) {
+                $lastDate = null;
+                foreach ($history as $entry) {
+                    if ($entry['execute'] === $operation) {
+                        $lastDate = $entry['date'];
+                    }
                 }
+                $lastDates[$operation] = $lastDate;
             }
-            $lastDates[$operation] = $lastDate;
         }
 
         return auth()->check()
-            ? view('index', compact('devicesList', 'lastDates'))
+            ? view('index', compact('devicesList', 'lastDates', 'history'))
             : redirect()->route('login');
     }
 

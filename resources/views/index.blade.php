@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Hash;
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">Optimization</h3>
-            <p id="lastoptimize" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['optimize'] }}</p>
+            <p id="lastoptimize" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['optimize'] ?? 'Not available' }}</p>
             <p class="mt-6 text-gray-500">When you click this you can optimize your computer and make it as fast as is was if not faster.</p>
           </div>
           <button id="optimize" data-execute="optimize" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\Hash;
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">One file scan</h3>
-            <p id="lastscanOne" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['scanOne'] }}</p>
+            <p id="lastscanOne" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['scanOne'] ?? 'Not available' }}</p>
             <p class="mt-6 text-gray-500">When you click this you can scan one file to check if it contains a virus inside itself.</p>
           </div>
           <button data-target="#scanOneFileModal" data-execute="scanOne" data-date="{{ now()->toDateString() }}" class="history open-modal bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Hash;
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">Scan entire PC</h3>
-            <p id="lastscanFull" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['scanFull'] }}</p>
+            <p id="lastscanFull" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['scanFull'] ?? 'Not available' }}</p>
             <p class="mt-6 text-gray-500">When you click this you can scan entire file computer to check if it contains a viruses.</p>
           </div>
           <button id="scan" data-execute="scanFull" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
@@ -49,7 +49,7 @@ use Illuminate\Support\Facades\Hash;
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">Regenerate keys</h3>
-            <p id="lastregenKeys" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['regenKeys'] }}</p>
+            <p id="lastregenKeys" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['regenKeys'] ?? 'Not available' }}</p>
             <p class="mt-6 text-gray-500">When you click this you will regenerate keys that are used to check for viruses on your computer.</p>
           </div>
           <button id="repair" data-execute="regenKeys" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
@@ -73,7 +73,7 @@ use Illuminate\Support\Facades\Hash;
             <h3 class="text-xl font-semibold text-gray-900">History</h3>
             <p class="mt-6 text-gray-500">When you click this you will be able to see the list of events that have happend.</p>
           </div>
-          <button class="bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Show</button>
+          <button data-target="#historyModal" class="open-modal bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Show</button>
         </div>
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
@@ -299,6 +299,72 @@ use Illuminate\Support\Facades\Hash;
   **************************************************************
   *                                                            *
   *                   Settings Section END                     *
+  *                                                            *
+  **************************************************************
+
+  **************************************************************
+  *                                                            *
+  *                   HISTORY Section START                    *
+  *                                                            *
+  **************************************************************
+-->
+
+<div id="historyModal" class="hidden relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+  
+  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+  <div class="fixed inset-0 overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+        <div class="pointer-events-auto w-screen max-w-md">
+          <form method="POST" action="{{ route('account') }}" class="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
+            @csrf
+            <div class="h-0 flex-1 overflow-y-auto">
+              <div class="bg-rose-700 py-6 px-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                  <h2 class="text-lg font-medium text-white" id="slide-over-title">History</h2>
+                </div>
+                <div class="mt-1">
+                  <p class="text-sm text-rose-300">Here you can view tasks performed on this account.</p>
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col justify-between">
+                <div class="divide-y divide-gray-200 px-4 sm:px-6">
+                  <div class="space-y-6 pt-6 pb-5">
+                  @if (!empty($history))
+        <div class="history">
+            <h3>Execution History:</h3>
+            <ul>
+                @foreach ($history as $entry)
+                    <li>
+                        <p class="text-sm">
+                            Execution: {{ $entry['execute'] }} <br>
+                            Last Date: {{ $entry['date'] }} <br>
+                           
+                        </p>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-shrink-0 justify-end px-4 py-4">
+              <button type="button" data-target="#historyModal" class="close-modal rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-rose-700 focus:ring-offset-2">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+  **************************************************************
+  *                                                            *
+  *                    HISTORY Section END                     *
   *                                                            *
   **************************************************************
 -->
