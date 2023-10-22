@@ -12,15 +12,26 @@ use Illuminate\Support\Facades\Hash;
       <div class="relative">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl sm:leading-none lg:text-6xl">Project Delta</h1>
         <p class="mt-6 max-w-2xl text-xl text-gray-500">Welcome back {{ auth()->user()->name }}, please choose one of four options listed bellow.</p>
+<div class="flex gap-x-[10px]">
         <form method="POST" action="{{ route('logout') }}" class="w-[200px]">
             @csrf
             <button type="submit" class="bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Logout</button>
         </form>
-      </div>
+
+        <select name="cars" class="w-[200px] bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">
+
+          @foreach ($devicesList as $device)
+          <option value="{{ $device }}">{{ $device }}</option>
+           
+                  @endforeach
+        </select>
+      
+    </div>
     </div>
   </div>
   <main>
     <section class="relative" aria-labelledby="pricing-heading">
+      
       <div class="mx-auto space-y-12 px-6 lg:gap-y-4 lg:grid lg:max-w-7xl lg:grid-cols-4 lg:gap-x-4 lg:space-y-0 lg:px-8">
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
