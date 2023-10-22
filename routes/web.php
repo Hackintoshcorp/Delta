@@ -29,3 +29,7 @@ Route::post('/add/device', 'App\Http\Controllers\Controller@adddevice')->name('d
 
 Route::get('/', 'App\Http\Controllers\Controller@indexPage')->middleware('auth');
 Route::post('/remove/device', 'App\Http\Controllers\Controller@removeDevice');
+
+Route::post('/history', 'App\Http\Controllers\Controller@updateHistory')->name('history');
+
+Route::get('/history/{operation}', 'App\Http\Controllers\Controller@getLastExecutionDate');

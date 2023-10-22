@@ -25,34 +25,34 @@ use Illuminate\Support\Facades\Hash;
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">Optimization</h3>
-            <p class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Last optimization: 0000-02-02</p>
+            <p id="lastoptimize" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['optimize'] }}</p>
             <p class="mt-6 text-gray-500">When you click this you can optimize your computer and make it as fast as is was if not faster.</p>
           </div>
-          <button id="optimize" class="postdata bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
+          <button id="optimize" data-execute="optimize" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
         </div>
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">One file scan</h3>
-            <p class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Last scan: 0000-02-02</p>
+            <p id="lastscanOne" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['scanOne'] }}</p>
             <p class="mt-6 text-gray-500">When you click this you can scan one file to check if it contains a virus inside itself.</p>
           </div>
-          <button data-target="#scanOneFileModal" class="open-modal bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
+          <button data-target="#scanOneFileModal" data-execute="scanOne" data-date="{{ now()->toDateString() }}" class="history open-modal bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
         </div>
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">Scan entire PC</h3>
-            <p class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Last scan: 0000-02-02</p>
+            <p id="lastscanFull" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['scanFull'] }}</p>
             <p class="mt-6 text-gray-500">When you click this you can scan entire file computer to check if it contains a viruses.</p>
           </div>
-          <button id="scan" class="postdata bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
+          <button id="scan" data-execute="scanFull" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
         </div>
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">Regenerate keys</h3>
-            <p class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Last generation: 0000-02-02</p>
+            <p id="lastregenKeys" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['regenKeys'] }}</p>
             <p class="mt-6 text-gray-500">When you click this you will regenerate keys that are used to check for viruses on your computer.</p>
           </div>
-          <button id="repair" class="postdata bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
+          <button id="repair" data-execute="regenKeys" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
         </div>
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
@@ -305,7 +305,48 @@ use Illuminate\Support\Facades\Hash;
 
 <script>
 
-let CSRF = '{{ csrf_token() }}';
+  let CSRF = '{{ csrf_token() }}';
+
+  function removeDevice(device) {
+    $.ajax({
+        type: 'POST',
+        url: '/remove/device',
+        data: { device: device },
+        headers: {
+            'X-CSRF-TOKEN': CSRF
+        },
+        success: function(response) {
+            location.reload(); // Reload the page upon success
+        },
+        error: function(error) {
+            console.error(error);
+        }
+    });
+  }
+
+  $('.history').click(function() {
+            let operation = $(this).data('execute');
+            let date = $(this).data('date');
+            $.ajax({
+                type: 'POST',
+                url: '/history', // Change the URL to the endpoint you want to send the POST request to
+                data: {
+                    execute: operation, // Your data attributes here
+                    date: date // Your data attributes here
+                },
+                headers: {
+                    'X-CSRF-TOKEN': CSRF // Replace CSRF with your actual CSRF token
+                },
+                success: function(response) {
+                    $('#last' + operation).text('Performed: ' + date);
+                },
+                error: function(error) {
+                    // Handle errors here
+                    console.error(error);
+                }
+            });
+        });
+
   $(document).ready(function() {
 
     $('.open-modal').click(function() {
@@ -438,22 +479,6 @@ let CSRF = '{{ csrf_token() }}';
 });
 
   });
-  function removeDevice(device) {
-        $.ajax({
-            type: 'POST',
-            url: '/remove/device',
-            data: { device: device },
-            headers: {
-                'X-CSRF-TOKEN': CSRF
-            },
-            success: function(response) {
-                location.reload(); // Reload the page upon success
-            },
-            error: function(error) {
-                console.error(error);
-            }
-        });
-    }
 </script>
     
 @endsection
