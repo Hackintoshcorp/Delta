@@ -1,6 +1,3 @@
-<?php
-use Illuminate\Support\Facades\Hash;
-?>
 @extends('app')
 
 @section('title', 'Index')
@@ -11,35 +8,33 @@ use Illuminate\Support\Facades\Hash;
     <div class="relative mx-auto max-w-2xl py-24 px-6 lg:max-w-7xl lg:py-32 lg:px-8">
       <div class="relative">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl sm:leading-none lg:text-6xl">Project Delta</h1>
-        <p class="mt-6 max-w-2xl text-xl text-gray-500">Welcome back {{ auth()->user()->name }}, please choose one of four options listed bellow.</p>
-<div class="flex gap-x-[10px]">
-        <form method="POST" action="{{ route('logout') }}" class="w-[200px]">
+        <p class="mt-6 max-w-2xl text-xl text-gray-500">Welcome back {{ auth()->user()->name }}, please choose one of four options listed below.</p>
+        <div class="flex gap-x-[10px]">
+          <form method="POST" action="{{ route('logout') }}" class="w-[200px]">
             @csrf
             <button type="submit" class="bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Logout</button>
-        </form>
+          </form>
 
-        <select name="cars" class="w-[200px] bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">
-
-          @foreach ($devicesList as $device)
-          <option value="{{ $device }}">{{ $device }}</option>
-           
-                  @endforeach
-        </select>
-      
-    </div>
+          <select name="device" aria-label="Select device" class="w-[200px] bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">
+            @foreach ($devicesList as $device)
+              <option value="{{ $device }}">{{ $device }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
     </div>
   </div>
   <main>
     <section class="relative" aria-labelledby="pricing-heading">
-      
+
       <div class="mx-auto space-y-12 px-6 lg:gap-y-4 lg:grid lg:max-w-7xl lg:grid-cols-4 lg:gap-x-4 lg:space-y-0 lg:px-8">
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">Optimization</h3>
             <p id="lastoptimize" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['optimize'] ?? 'Not available' }}</p>
-            <p class="mt-6 text-gray-500">When you click this you can optimize your computer and make it as fast as is was if not faster.</p>
+            <p class="mt-6 text-gray-500">When you click this you can optimize your computer and make it as fast as it was, if not faster.</p>
           </div>
-          <button id="optimize" data-execute="optimize" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
+          <button data-command="[optimize]" data-execute="optimize" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
         </div>
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
@@ -53,9 +48,9 @@ use Illuminate\Support\Facades\Hash;
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">Scan entire PC</h3>
             <p id="lastscanFull" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['scanFull'] ?? 'Not available' }}</p>
-            <p class="mt-6 text-gray-500">When you click this you can scan entire file computer to check if it contains a viruses.</p>
+            <p class="mt-6 text-gray-500">When you click this you can scan your entire computer to check if it contains viruses.</p>
           </div>
-          <button id="scan" data-execute="scanFull" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
+          <button data-command="[scan]" data-execute="scanFull" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-500 text-white hover:bg-rose-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
         </div>
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
@@ -63,7 +58,7 @@ use Illuminate\Support\Facades\Hash;
             <p id="lastregenKeys" class="absolute top-0 -translate-y-1/2 transform rounded-full bg-rose-500 py-1.5 px-4 text-sm font-semibold text-white">Performed: {{ $lastDates['regenKeys'] ?? 'Not available' }}</p>
             <p class="mt-6 text-gray-500">When you click this you will regenerate keys that are used to check for viruses on your computer.</p>
           </div>
-          <button id="repair" data-execute="regenKeys" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
+          <button data-command="[repair]" data-execute="regenKeys" data-date="{{ now()->toDateString() }}" class="history postdata bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Begin</button>
         </div>
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
@@ -82,7 +77,7 @@ use Illuminate\Support\Facades\Hash;
         <div class="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">History</h3>
-            <p class="mt-6 text-gray-500">When you click this you will be able to see the list of events that have happend.</p>
+            <p class="mt-6 text-gray-500">When you click this you will be able to see the list of events that have happened.</p>
           </div>
           <button data-target="#historyModal" class="open-modal bg-rose-50 text-rose-700 hover:bg-rose-100 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium">Show</button>
         </div>
@@ -100,7 +95,7 @@ use Illuminate\Support\Facades\Hash;
       <div class="relative mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
         <div class="relative overflow-hidden rounded-xl bg-rose-500 py-24 px-8 shadow-2xl lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-16">
           <div class="absolute inset-0 opacity-50 mix-blend-multiply saturate-0 filter">
-            <img src="https://images.unsplash.com/photo-1601381718415-a05fb0a261f3?ixid=MXwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8ODl8fHxlbnwwfHx8&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1216&amp;q=80" alt="" class="h-full w-full object-cover">
+            <img src="https://images.unsplash.com/photo-1601381718415-a05fb0a261f3?ixid=MXwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8ODl8fHxlbnwwfHx8&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1216&amp;q=80" alt="" class="h-full w-full object-cover" referrerpolicy="no-referrer">
           </div>
           <div class="relative lg:col-span-1">
             <blockquote class="mt-6 text-white">
@@ -120,24 +115,17 @@ use Illuminate\Support\Facades\Hash;
 
 <div aria-live="assertive" class="notification hidden pointer-events-none fixed inset-0 flex flex-col items-end px-4 py-6 sm:items-start sm:p-6" style="flex-wrap:wrap;"></div>
 
-<!-- 
-  **************************************************************
-  *                                                            *
-  *                  ONE FILE Section START                    *
-  *                                                            *
-  **************************************************************
--->
-
-<div id="scanOneFileModal" class="hidden relative z-10 " aria-labelledby="modal-title" role="dialog" aria-modal="true">
+{{-- ============================ ONE FILE SCAN MODAL ============================ --}}
+<div id="scanOneFileModal" class="hidden relative z-10" aria-labelledby="scan-modal-title" role="dialog" aria-modal="true">
   <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
   <div class="fixed inset-0 z-10 overflow-y-auto">
     <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
       <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
         <div>
           <div class="text-center">
-            <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">Drag a file to scan</h3>
+            <h3 class="text-lg font-medium leading-6 text-gray-900" id="scan-modal-title">Drag a file to scan</h3>
             <div class="mt-2">
-              <div class="sm:grid  sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+              <div class="sm:grid sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                 <div class="mt-1 sm:col-span-2 sm:mt-0">
                   <div class="flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                     <div id="drop_zone" class="space-y-1 text-center">
@@ -163,20 +151,7 @@ use Illuminate\Support\Facades\Hash;
   </div>
 </div>
 
-<!-- 
-  **************************************************************
-  *                                                            *
-  *                   ONE FILE Section END                     *
-  *                                                            *
-  **************************************************************
-
-  **************************************************************
-  *                                                            *
-  *                  Devices Section START                     *
-  *                                                            *
-  **************************************************************
--->
-
+{{-- ============================ DEVICES MODAL ============================ --}}
 <div class="hidden relative z-10" id="devicesModal" role="dialog" aria-modal="true">
   <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
   <div class="fixed inset-0 overflow-hidden">
@@ -186,42 +161,42 @@ use Illuminate\Support\Facades\Hash;
           <div class="absolute top-0 left-0 -ml-8 flex pt-4 pr-2 sm:-ml-10 sm:pr-4">
             <button type="button" data-target="#devicesModal" class="close-modal rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white">
               <span class="sr-only">Close panel</span>
-              
               <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             </button>
           </div>
-          
+
           <div class="h-full overflow-y-auto bg-white p-8">
             <div class="space-y-6 pb-16">
               <div>
                 <h3 class="font-medium text-gray-900">Devices added to this account</h3>
                 <div class="mt-2 flex items-center justify-between">
-                  <p class="text-sm italic text-gray-500">Here you can add remove or edit devices. You can perform certain actions to those devices.</p>
+                  <p class="text-sm italic text-gray-500">Here you can add, remove or edit devices. You can perform certain actions on those devices.</p>
                 </div>
               </div>
               <div>
                 <ul role="list" class="mt-2 divide-y divide-gray-200 border-t border-b border-gray-200">
-                
+
                   @foreach ($devicesList as $device)
-                      <li class="flex items-center justify-between py-3">
-                          <div class="flex items-center">
-                          <svg  xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M64 0C28.7 0 0 28.7 0 64V352c0 35.3 28.7 64 64 64H240l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H346.7L336 416H512c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM512 64V288H64V64H512z"/></svg>
-                              <p class="ml-4 text-sm font-medium text-gray-900">{{ $device }}</p>
-                          </div>
-                          <button type="button" class="ml-6 rounded-md bg-white text-sm font-medium text-rose-700 hover:text-rose-800 focus:outline-none focus:ring-2 focus:ring-rose-800 focus:ring-offset-2" onclick="removeDevice('{{ $device }}')">
-                              Remove
-                          </button>
-                      </li>
+                    <li class="flex items-center justify-between py-3">
+                      <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M64 0C28.7 0 0 28.7 0 64V352c0 35.3 28.7 64 64 64H240l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H346.7L336 416H512c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM512 64V288H64V64H512z"/></svg>
+                        <p class="ml-4 text-sm font-medium text-gray-900">{{ $device }}</p>
+                      </div>
+                      <button type="button" data-device="{{ $device }}" class="remove-device ml-6 rounded-md bg-white text-sm font-medium text-rose-700 hover:text-rose-800 focus:outline-none focus:ring-2 focus:ring-rose-800 focus:ring-offset-2">
+                        Remove
+                      </button>
+                    </li>
                   @endforeach
 
                   <li class="flex items-center justify-between py-2">
-                  <div>
-                      <label for="project-name" class="block text-sm font-medium text-gray-900">Add key (use this key to add devices)</label>
+                    <div>
+                      <label for="device-key" class="block text-sm font-medium text-gray-900">Add key (use this key to add devices)</label>
                       <div class="mt-1">
-                      <input type="text" name="email" value="{{ md5(auth()->user()->email) }}" id="project-name" class="block w-full rounded-md focus:border-rose-700 focus:ring-rose-700 sm:text-sm">
-                     </div>
+                        {{-- $deviceKey must be a random, server-generated token (e.g. Str::random(40)), stored per user and rotatable. --}}
+                        <input type="text" id="device-key" value="{{ $deviceKey ?? '' }}" readonly autocomplete="off" class="block w-full rounded-md focus:border-rose-700 focus:ring-rose-700 sm:text-sm">
+                      </div>
                     </div>
                   </li>
                 </ul>
@@ -238,21 +213,8 @@ use Illuminate\Support\Facades\Hash;
   </div>
 </div>
 
-<!-- 
-  **************************************************************
-  *                                                            *
-  *                   Devices Section END                      *
-  *                                                            *
-  **************************************************************
-
-  **************************************************************
-  *                                                            *
-  *                 Settings Section START                     *
-  *                                                            *
-  **************************************************************
--->
-<div id="settingsModal" class="hidden relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
-  
+{{-- ============================ SETTINGS MODAL ============================ --}}
+<div id="settingsModal" class="hidden relative z-10" aria-labelledby="settings-title" role="dialog" aria-modal="true">
   <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
   <div class="fixed inset-0 overflow-hidden">
     <div class="absolute inset-0 overflow-hidden">
@@ -263,7 +225,7 @@ use Illuminate\Support\Facades\Hash;
             <div class="h-0 flex-1 overflow-y-auto">
               <div class="bg-rose-700 py-6 px-4 sm:px-6">
                 <div class="flex items-center justify-between">
-                  <h2 class="text-lg font-medium text-white" id="slide-over-title">Settings</h2>
+                  <h2 class="text-lg font-medium text-white" id="settings-title">Settings</h2>
                 </div>
                 <div class="mt-1">
                   <p class="text-sm text-rose-300">Here you can edit settings of antivirus and this account control panel.</p>
@@ -273,25 +235,24 @@ use Illuminate\Support\Facades\Hash;
                 <div class="divide-y divide-gray-200 px-4 sm:px-6">
                   <div class="space-y-6 pt-6 pb-5">
                     <div>
-                      <label for="project-name" class="block text-sm font-medium text-gray-900">Your Name</label>
+                      <label for="settings-name" class="block text-sm font-medium text-gray-900">Your Name</label>
                       <div class="mt-1">
-                        <input type="text" name="name" value="{{ auth()->user()->name }}" id="project-name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-700 focus:ring-rose-700 sm:text-sm">
+                        <input type="text" name="name" id="settings-name" value="{{ auth()->user()->name }}" required maxlength="255" autocomplete="given-name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-700 focus:ring-rose-700 sm:text-sm">
                       </div>
                     </div>
                     <div>
-                      <label for="project-name" class="block text-sm font-medium text-gray-900">Your Surname</label>
+                      <label for="settings-surname" class="block text-sm font-medium text-gray-900">Your Surname</label>
                       <div class="mt-1">
-                        <input type="text" name="surname" value="{{ auth()->user()->surname }}" id="project-name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-700 focus:ring-rose-700 sm:text-sm">
+                        <input type="text" name="surname" id="settings-surname" value="{{ auth()->user()->surname }}" required maxlength="255" autocomplete="family-name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-700 focus:ring-rose-700 sm:text-sm">
                       </div>
                     </div>
                     <div>
-                      <label for="project-name" class="block text-sm font-medium text-gray-900">Your Email</label>
+                      <label for="settings-email" class="block text-sm font-medium text-gray-900">Your Email</label>
                       <div class="mt-1">
-                        <input type="text" name="email" value="{{ auth()->user()->email }}" id="project-name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-700 focus:ring-rose-700 sm:text-sm">
+                        <input type="email" name="email" id="settings-email" value="{{ auth()->user()->email }}" required maxlength="255" autocomplete="email" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-700 focus:ring-rose-700 sm:text-sm">
                       </div>
                     </div>
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -306,33 +267,18 @@ use Illuminate\Support\Facades\Hash;
   </div>
 </div>
 
-<!-- 
-  **************************************************************
-  *                                                            *
-  *                   Settings Section END                     *
-  *                                                            *
-  **************************************************************
-
-  **************************************************************
-  *                                                            *
-  *                   HISTORY Section START                    *
-  *                                                            *
-  **************************************************************
--->
-
-<div id="historyModal" class="hidden relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
-  
+{{-- ============================ HISTORY MODAL ============================ --}}
+<div id="historyModal" class="hidden relative z-10" aria-labelledby="history-title" role="dialog" aria-modal="true">
   <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
   <div class="fixed inset-0 overflow-hidden">
     <div class="absolute inset-0 overflow-hidden">
       <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
         <div class="pointer-events-auto w-screen max-w-md">
-          <form method="POST" action="{{ route('account') }}" class="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
-            @csrf
+          <div class="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
             <div class="h-0 flex-1 overflow-y-auto">
               <div class="bg-rose-700 py-6 px-4 sm:px-6">
                 <div class="flex items-center justify-between">
-                  <h2 class="text-lg font-medium text-white" id="slide-over-title">History</h2>
+                  <h2 class="text-lg font-medium text-white" id="history-title">History</h2>
                 </div>
                 <div class="mt-1">
                   <p class="text-sm text-rose-300">Here you can view tasks performed on this account.</p>
@@ -341,184 +287,128 @@ use Illuminate\Support\Facades\Hash;
               <div class="flex flex-1 flex-col justify-between">
                 <div class="divide-y divide-gray-200 px-4 sm:px-6">
                   <div class="space-y-6 pt-6 pb-5">
-                  @if (!empty($history))
-        <div class="history">
-            <h3>Execution History:</h3>
-            <ul>
-                @foreach ($history as $entry)
-                    <li>
-                        <p class="text-sm">
-                            Execution: {{ $entry['execute'] }} <br>
-                            Last Date: {{ $entry['date'] }} <br>
-                           
-                        </p>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+                    @if (!empty($history))
+                      <div class="history-list">
+                        <h3>Execution History:</h3>
+                        <ul>
+                          @foreach ($history as $entry)
+                            <li>
+                              <p class="text-sm">
+                                Execution: {{ $entry['execute'] }} <br>
+                                Last Date: {{ $entry['date'] }}
+                              </p>
+                            </li>
+                          @endforeach
+                        </ul>
+                      </div>
+                    @endif
                   </div>
-                  
                 </div>
               </div>
             </div>
             <div class="flex flex-shrink-0 justify-end px-4 py-4">
               <button type="button" data-target="#historyModal" class="close-modal rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-rose-700 focus:ring-offset-2">Close</button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!--
-  **************************************************************
-  *                                                            *
-  *                    HISTORY Section END                     *
-  *                                                            *
-  **************************************************************
--->
-
 <script>
+  const CSRF = @json(csrf_token());
 
-  let CSRF = '{{ csrf_token() }}';
+  // Per-session secret shared with the local agent. The agent must reject any request
+  // that does not carry a valid token and must only allow this site's origin (CORS).
+  const AGENT_URL = 'http://localhost:6969/';
+  const AGENT_TOKEN = @json($agentToken ?? '');
 
-  function removeDevice(device) {
-    $.ajax({
-        type: 'POST',
-        url: '/remove/device',
-        data: { device: device },
-        headers: {
-            'X-CSRF-TOKEN': CSRF
-        },
-        success: function(response) {
-            location.reload(); // Reload the page upon success
-        },
-        error: function(error) {
-            console.error(error);
-        }
-    });
-  }
+  $(document).ready(function () {
 
-  $('.history').click(function() {
-            let operation = $(this).data('execute');
-            let date = $(this).data('date');
-            $.ajax({
-                type: 'POST',
-                url: '/history', // Change the URL to the endpoint you want to send the POST request to
-                data: {
-                    execute: operation, // Your data attributes here
-                    date: date // Your data attributes here
-                },
-                headers: {
-                    'X-CSRF-TOKEN': CSRF // Replace CSRF with your actual CSRF token
-                },
-                success: function(response) {
-                    $('#last' + operation).text('Performed: ' + date);
-                },
-                error: function(error) {
-                    // Handle errors here
-                    console.error(error);
-                }
-            });
-        });
-
-  $(document).ready(function() {
-
-    $('.open-modal').click(function() {
-        toggleModal($(this).data('target'));
-    });
-
-    $('.close-modal').click(function() {
-        toggleModal($(this).data('target'), false);
-    });
-
+    // ---------- Modals ----------
     function toggleModal(modalId, show = true) {
-        const $modal = $(modalId);
-        const $body = $('body');
-        const duration = 500;
-        if (show) {
-            $modal.fadeIn(duration);
-            $body.css('overflow', 'hidden');
-        } else {
-            $modal.fadeOut(duration);
-            $body.css('overflow', 'auto');
-        }
+      const $modal = $(modalId);
+      const duration = 500;
+      if (show) {
+        $modal.fadeIn(duration);
+        $('body').css('overflow', 'hidden');
+      } else {
+        $modal.fadeOut(duration);
+        $('body').css('overflow', 'auto');
+      }
     }
 
+    $('.open-modal').on('click', function () {
+      toggleModal($(this).data('target'));
+    });
+
+    $('.close-modal').on('click', function () {
+      toggleModal($(this).data('target'), false);
+    });
+
+    // ---------- Notifications (text only, never inserted as HTML) ----------
     let counter = 0;
-    const notification = $('.notification');
-    const dropZone = $('#drop_zone');
-    const buttons = {
-      optimize: '[optimize]',
-      scan: '[scan]',
-      repair: '[repair]',
-    };
+    const $notification = $('.notification');
 
-
-    function displayNotification(title, recieved_message, duration) {
+    function displayNotification(title, receivedMessage, duration) {
       counter++;
-      let id = counter;
-      let messageObj;
+      const id = 'msg-' + counter;
+
+      let parsed = null;
       try {
-        messageObj = JSON.parse(recieved_message);
-      } catch (error) {
-        messageObj = {
-          status: title.charAt(0).toUpperCase() + title.slice(1),
-          message: recieved_message,
-          removed: ''
-        };
-      }
+        parsed = JSON.parse(receivedMessage);
+      } catch (e) { /* plain-text response */ }
 
-      const {
-        status,
-        message,
-        removed
-      } = messageObj;
+      const isObject = parsed !== null && typeof parsed === 'object';
+      const status = isObject ? parsed.status : String(title).charAt(0).toUpperCase() + String(title).slice(1);
+      const message = isObject ? parsed.message : receivedMessage;
+      const removed = isObject ? parsed.removed : '';
 
-      const html = `
-                  <div id="msg-${id}" class="mb-1 flex w-full flex-col items-center space-y-4 sm:items-end">
-                    <div class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                        <div class="p-4">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0"><svg class="h-6 w-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12zm5.793-4.207a1 1 0 0 1 1.414 0L12 10.586l2.793-2.793a1 1 0 1 1 1.414 1.414L13.414 12l2.793 2.793a1 1 0 0 1-1.414 1.414L12 13.414l-2.793 2.793a1 1 0 0 1-1.414-1.414L10.586 12 7.793 9.207a1 1 0 0 1 0-1.414z" fill="#DE3163"/></svg></div>
-                                <div
-                                    class="ml-3 w-0 flex-1 pt-0.5">
-                                    <p class="text-sm font-medium text-gray-900">${status}</p>
-                                    <p class="mt-1 text-sm text-gray-500">${message}</p>
-                                    <p class="mt-1 text-sm text-gray-500">${removed}</p>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                  </div>`;
+      const $el = $(`
+        <div class="mb-1 flex w-full flex-col items-center space-y-4 sm:items-end">
+          <div class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+            <div class="p-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0"><svg class="h-6 w-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12zm5.793-4.207a1 1 0 0 1 1.414 0L12 10.586l2.793-2.793a1 1 0 1 1 1.414 1.414L13.414 12l2.793 2.793a1 1 0 0 1-1.414 1.414L12 13.414l-2.793 2.793a1 1 0 0 1-1.414-1.414L10.586 12 7.793 9.207a1 1 0 0 1 0-1.414z" fill="#DE3163"/></svg></div>
+                <div class="ml-3 w-0 flex-1 pt-0.5">
+                  <p class="js-status text-sm font-medium text-gray-900"></p>
+                  <p class="js-message mt-1 text-sm text-gray-500"></p>
+                  <p class="js-removed mt-1 text-sm text-gray-500"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`).attr('id', id);
 
-      notification.append(html);
-      setTimeout(function() {
-        $('#msg-' + id).remove();
-        if (notification.children().length === 0) {
-          notification.addClass('hidden');
+      // .text() escapes everything, so a malicious agent/server response cannot inject markup.
+      $el.find('.js-status').text(status ?? '');
+      $el.find('.js-message').text(message ?? '');
+      $el.find('.js-removed').text(removed ?? '');
+
+      $notification.append($el).removeClass('hidden');
+
+      setTimeout(function () {
+        $el.remove();
+        if ($notification.children().length === 0) {
+          $notification.addClass('hidden');
         }
       }, duration);
-      notification.removeClass('hidden');
     }
 
-
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-      dropZone.on(eventName, e => {
-        e.preventDefault();
-        e.stopPropagation();
-      });
-    });
-
-
-    const post = (url, requestData) => {
-      $.post(url, requestData, (data, status) => {
-        console.log(`Response data: ${data}`);
-        console.log(`Response status: ${status}`);
+    // ---------- Local agent ----------
+    const post = (requestData) => {
+      $.ajax({
+        type: 'POST',
+        url: AGENT_URL,
+        data: requestData,
+        contentType: 'text/plain',
+        headers: { 'X-Agent-Token': AGENT_TOKEN },
+        dataType: 'text',
+        timeout: 15000
+      }).done((data, status) => {
         displayNotification(status, data, 5000);
-      }).fail((jqXHR, textStatus, errorThrown) => {
+      }).fail(() => {
         displayNotification(
           'Program not opened.',
           "We can't seem to find our program running on your computer, please check if it's open or not.",
@@ -527,35 +417,89 @@ use Illuminate\Support\Facades\Hash;
       });
     };
 
-
-    dropZone.on('drop', e => {
-      const file = e.originalEvent.dataTransfer.files[0];
-      const reader = new FileReader();
-
-      reader.onload = e => {
-        const binary = e.target.result;
-        const md5Hash = CryptoJS.MD5(binary).toString();
-        $('#one_file_modal').addClass('hidden');
-        document.body.classList.remove('overflow-hidden');
-        post('http://localhost:6969/', '[one_file]' + md5Hash);
-      };
-
-      reader.readAsBinaryString(file);
+    $('button.postdata').on('click', function () {
+      const command = $(this).data('command');
+      if (command) {
+        post(command);
+      }
     });
 
+    // ---------- One-file scan (hash computed in the browser; the file never leaves the machine) ----------
+    const dropZone = $('#drop_zone');
 
-    $('button').click(function() {
-    let buttonId = $(this).attr('id');
-    let requestData = buttons[buttonId];
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.on(eventName, e => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
 
-    if ($(this).hasClass('postdata')) {
-        post('http://localhost:6969/', requestData);
+    async function sha256Hex(file) {
+      const buffer = await file.arrayBuffer();
+      const digest = await crypto.subtle.digest('SHA-256', buffer);
+      return Array.from(new Uint8Array(digest))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
     }
 
-    
-});
+    dropZone.on('drop', async e => {
+      const file = e.originalEvent.dataTransfer.files[0];
+      if (!file) {
+        return;
+      }
 
+      if (!window.crypto || !crypto.subtle) {
+        displayNotification('Error', 'Hashing needs a secure context (HTTPS or localhost).', 5000);
+        return;
+      }
+
+      try {
+        // SHA-256 instead of MD5: MD5 is broken, so a crafted file could share a hash with a clean one.
+        const hash = await sha256Hex(file);
+        toggleModal('#scanOneFileModal', false);
+        post('[one_file]' + hash);
+      } catch (err) {
+        displayNotification('Error', 'Could not read the file.', 5000);
+      }
+    });
+
+    // ---------- Devices ----------
+    $(document).on('click', '.remove-device', function () {
+      const device = $(this).data('device');
+      if (!confirm('Remove this device from your account?')) {
+        return;
+      }
+      $.ajax({
+        type: 'POST',
+        url: '/remove/device',
+        data: { device: device },
+        headers: { 'X-CSRF-TOKEN': CSRF },
+        success: function () {
+          location.reload();
+        },
+        error: function (error) {
+          console.error(error);
+        }
+      });
+    });
+
+    // ---------- History ----------
+    $('.history').on('click', function () {
+      const operation = $(this).data('execute');
+      const date = $(this).data('date');
+      $.ajax({
+        type: 'POST',
+        url: '/history',
+        data: { execute: operation, date: date },
+        headers: { 'X-CSRF-TOKEN': CSRF },
+        success: function () {
+          $('#last' + operation).text('Performed: ' + date);
+        },
+        error: function (error) {
+          console.error(error);
+        }
+      });
+    });
   });
 </script>
-    
 @endsection
